@@ -240,8 +240,12 @@ redis_validate() {
 #########################
 redis_configure_replication() {
     info "Configuring replication mode"
-
-    redis_conf_set replica-announce-ip "$(get_machine_ip)"
+    
+    if [[ -n "$REDIS_REPLICA_IP" ]]; then
+      redis_conf_set replica-announce-ip "${REDIS_REPLICA_IP}"
+    else
+      redis_conf_set replica-announce-ip "$(get_machine_ip)"
+    fi
     redis_conf_set replica-announce-port "$REDIS_MASTER_PORT_NUMBER"
     if [[ "$REDIS_REPLICATION_MODE" = "master" ]]; then
         if [[ -n "$REDIS_PASSWORD" ]]; then
